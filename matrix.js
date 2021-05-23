@@ -4,7 +4,6 @@ class Matrix {
         this.columns = cols;
         this.matrix = [];
         this.inputOverflow = undefined;
-        //this.type = Matrix.typeOf(this);
         switch (inputType) {
             case 'Singular':
                 if (data.length = 1 && data[0].length === this.rows * this.columns) {
@@ -61,21 +60,6 @@ class Matrix {
         }
     }
 
-    /*static typeOf(matrix) {
-        if (matrix instanceof Matrix) {
-            let a = Matrix.toArray(matrix);
-            let arr = [];
-            const allEqual = arr => arr.every(val => val === arr[0]);
-            for (let val of a) {
-                arr.push(typeof val);
-            }
-            if (allEqual(arr)) {return (typeof arr[0]);} else {return 'Compound';}
-        } else {
-            throw 'Matrix Error: Cannot find type of matrix if the argument is not a matrix.';
-        }
-    }
-    Always returns "string" for some reason */
-
     nthRow(n) {
         if (n >= this.rows) {return null} else {return this.matrix[n]}
     }
@@ -89,6 +73,24 @@ class Matrix {
             return col;
         } 
     }
+
+    contains(item) {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < this.columns; j++) {
+                if (this.matrix[i][j] === item) {return true;}
+            }
+        }
+        return false;
+    }
+}
+
+class NumMatrix extends Matrix{
+    constructor(rows, cols, inputType, ...data) {
+        super(rows, cols, inputType, ...data)
+        this.discriminant = undefined;
+    }
+
+    
 
     add(addend) {
         if (this.rows != addend.rows || this.columns != addend.columns) {
@@ -108,7 +110,7 @@ class Matrix {
     }
 
     subtract(subtrahend) {
-        return this.add(this.constantProduct(-1));
+        return this.add(this.scalarProduct(-1));
     }
 
     scalarProduct(k) {
@@ -123,36 +125,18 @@ class Matrix {
     }
 
     matrixProduct(multiplicand) {
-        if (this.rows != multiplicand.columns || this.columns != multiplicand.rows) {
-            throw 'Matrix Error: In order to multiply matrices, the columns of one matrix must be equal to the rows of the other, and the rows of the first matrix must be equal to the columns of the other.';
+        if (this.columns != multiplicand.rows) {
+            throw 'Matrix Error: In order to multiply matrices, the columns of the first matrix must be equal to the rows of the other.';
         }
 
         let arr = [];
 
-        for (let i = 0; i <= this.rows; i++) {
-            for (let j = 0; j <= multiplicand.columns; j++) {
+        for (let i = 0; i < this.rows; i++) {
+            for (let j = 0; j < multiplicand.columns; j++) {
                 let num = this.matrix[i][j] * multiplicand.matrix[j][i];
                 console.log(i, j, num, this.matrix[i], multiplicand.matrix[j]); 
                 arr.push(num);
             }
         }
-
-
     }
 }
-/*
-[
-    [1, 2, 3, 4, 5, 6]
-]
-
-[
-    [1]
-    [2]
-    [3]
-    [4]
-    [5]
-    [6]
-]
-
-1*1; 2*2; 3*3
-*/
